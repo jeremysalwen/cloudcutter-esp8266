@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1688px" height="969px" viewBox="0 0 1614 894">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b2b2b"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b3261e"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e5bb3"/>
+    </marker>
+    <style>
+      .title { font: 700 30px monospace; fill: #111; }
+      .subtitle { font: 600 18px monospace; fill: #333; }
+      .label { font: 700 17px monospace; fill: #222; }
+      .small { font: 500 14px monospace; fill: #333; }
+      .tiny { font: 500 12px monospace; fill: #444; }
+      .field { font: 500 15px monospace; fill: #111; }
+      .offset { font: 600 13px monospace; fill: #555; }
+      .note { font: 600 15px monospace; fill: #111; }
+      .danger { font: 700 15px monospace; fill: #b3261e; }
+      .good { font: 700 15px monospace; fill: #1e5bb3; }
+      .region-dram { fill: #eef6ff; stroke: #6c8fb8; stroke-width: 2.5; }
+      .region-flash { fill: #fff3e8; stroke: #c48645; stroke-width: 2.5; }
+      .subregion { fill: rgba(255,255,255,0.55); stroke: #7c93ac; stroke-width: 1.8; }
+      .subregion-flash { fill: rgba(255,255,255,0.45); stroke: #c48645; stroke-width: 1.8; }
+      .node-real { fill: #f6f6f6; stroke: #444; stroke-width: 2; }
+      .node-fake { fill: #eaf4ff; stroke: #1e5bb3; stroke-width: 2.5; }
+      .headbox { fill: #fff7e8; stroke: #8a6d2f; stroke-width: 2; }
+      .buffer { fill: #ffffff; stroke: #8aa6c8; stroke-width: 2; }
+      .buffer-flash { fill: #fffaf3; stroke: #c48645; stroke-width: 2; }
+      .embed { fill: rgba(30,91,179,0.10); stroke: #1e5bb3; stroke-width: 2.5; stroke-dasharray: 8 6; }
+      .embed-flash { fill: rgba(196,134,69,0.12); stroke: #a8621d; stroke-width: 2.5; stroke-dasharray: 8 6; }
+      .divider { stroke: #888; stroke-width: 1.5; }
+      .ptr { stroke: #2b2b2b; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .ptr-red { stroke: #b3261e; stroke-width: 4; fill: none; marker-end: url(#arrow-red); }
+      .ptr-blue { stroke: #1e5bb3; stroke-width: 3.5; fill: none; marker-end: url(#arrow-blue); }
+      .ptr-dashed { stroke: #666; stroke-width: 2.5; stroke-dasharray: 10 7; fill: none; marker-end: url(#arrow); }
+      .cross { stroke: #b3261e; stroke-width: 4; }
+    </style>
+  </defs>
+  <rect y="7.059" width="1614.12" height="885.882" style="stroke: rgb(0, 0, 0); fill: rgb(255, 255, 255);"/>
+  <rect x="26.471" y="26.471" width="1110" height="840" rx="18" class="region-dram"/>
+  <text x="51.471" y="62.471" class="label" style="white-space: pre;">DRAM</text>
+  <text x="51.471" y="86.471" class="small" style="white-space: pre;">writable, not executable</text>
+  <rect x="51.471" y="116.471" width="1060" height="315" rx="14" class="subregion"/>
+  <text x="76.471" y="150.471" class="label" style="white-space: pre;">global variables</text>
+  <text x="76.471" y="174.471" class="small" style="white-space: pre;">fixed addresses in memory</text>
+  <rect x="51.471" y="466.471" width="1060" height="360" rx="14" class="subregion"/>
+  <text x="76.471" y="500.471" class="label" style="white-space: pre;">heap</text>
+  <text x="76.471" y="524.471" class="small" style="white-space: pre;">dynamically allocated memory; not at a fixed location</text>
+  <rect x="1171.47" y="26.471" width="415.588" height="842.353" rx="18" class="region-flash" style=""/>
+  <text x="1196.47" y="62.471" class="label" style="white-space: pre;">FLASH</text>
+  <text x="1196.47" y="86.471" class="small" style="white-space: pre;">executable, not writable</text>
+  <rect x="79.118" y="234.706" width="275" height="96" rx="12" class="headbox"/>
+  <text x="101.471" y="262.471" class="label" style="white-space: pre;">global pointer</text>
+  <text x="101.471" y="293.471" class="field" style="white-space: pre;">sys_timers_head</text>
+  <path d="M 356.471 274.471 C 494.706 409.765 -49.999 549.118 102.942 639.706" class="ptr-dashed"/>
+  <line x1="244.118" y1="424.412" x2="286.118" y2="469.412" class="cross"/>
+  <line x1="286.118" y1="424.412" x2="244.118" y2="469.412" class="cross"/>
+  <rect x="458.236" y="132.648" width="329.411" height="297.941" rx="12" class="buffer" style=""/>
+  <text x="478.529" y="161.119" class="label" style="white-space: pre;">SSID buffer in global memory</text>
+  <rect x="478.236" y="278.824" width="270" height="128" rx="10" class="embed" style=""/>
+  <text x="484.471" y="270.177" class="good" style="white-space: pre;">fake sys_timeout</text>
+  <line x1="478.236" y1="310.824" x2="748.236" y2="310.824" class="divider" style=""/>
+  <line x1="478.236" y1="342.824" x2="749.412" y2="342.824" class="divider" style=""/>
+  <line x1="478.236" y1="374.824" x2="748.236" y2="374.824" class="divider" style=""/>
+  <text x="493.236" y="300.824" class="offset" style="white-space: pre;">0x0</text>
+  <text x="559.412" y="300.824" class="field" style="white-space: pre;">next     = Don't care</text>
+  <text x="493.236" y="332.824" class="offset" style="white-space: pre;">0x4</text>
+  <text x="558.236" y="332.824" class="field" style="white-space: pre;">time     = small int</text>
+  <text x="493.236" y="364.824" class="offset" style="white-space: pre;">0x8</text>
+  <text x="558.236" y="364.824" class="field" style="white-space: pre;">callback = &amp;shellcode</text>
+  <text x="493.236" y="396.824" class="offset" style="white-space: pre;">0xc</text>
+  <text x="558.236" y="396.824" class="field" style="white-space: pre;">arg      = arbitrary</text>
+  <text class="good" style="white-space: pre;" x="788.236" y="300.824" dx="136.47" dy="25.882">callback pointer</text>
+  <path d="M 356.471 274.471 C 446.471 274.471 343.53 294.471 473.53 294.471" class="ptr-red"/>
+  <text x="194.706" y="220.295" class="danger" style="white-space: pre;">Overwritten by unlink primitive</text>
+  <g transform="matrix(1, 0, 0, 1, -340, -25.882353)">
+    <text x="450" y="625" class="label" style="white-space: pre;">real timers list</text>
+    <g id="timer1">
+      <rect x="445" y="650" width="250" height="128" rx="10" class="node-real"/>
+      <line x1="445" y1="682" x2="695" y2="682" class="divider"/>
+      <line x1="445" y1="714" x2="695" y2="714" class="divider"/>
+      <line x1="445" y1="746" x2="695" y2="746" class="divider"/>
+      <text x="463" y="639" class="label" style="white-space: pre;">timer_1</text>
+      <text x="460" y="672" class="offset" style="white-space: pre;">0x0</text>
+      <text x="525" y="672" class="field" style="white-space: pre;">next     = &amp;timer_2</text>
+      <text x="460" y="704" class="offset" style="white-space: pre;">0x4</text>
+      <text x="525" y="704" class="field" style="white-space: pre;">time     = ...</text>
+      <text x="460" y="736" class="offset" style="white-space: pre;">0x8</text>
+      <text x="525" y="736" class="field" style="white-space: pre;">callback = ...</text>
+      <text x="460" y="768" class="offset" style="white-space: pre;">0xc</text>
+      <text x="525" y="768" class="field" style="white-space: pre;">arg      = ...</text>
+    </g>
+    <g id="timer2">
+      <rect x="760" y="650" width="250" height="128" rx="10" class="node-real"/>
+      <line x1="760" y1="682" x2="1010" y2="682" class="divider"/>
+      <line x1="760" y1="714" x2="1010" y2="714" class="divider"/>
+      <line x1="760" y1="746" x2="1010" y2="746" class="divider"/>
+      <text x="778" y="639" class="label" style="white-space: pre;">timer_2</text>
+      <text x="775" y="672" class="offset" style="white-space: pre;">0x0</text>
+      <text x="840" y="672" class="field" style="white-space: pre;">next     = &amp;timer_3</text>
+      <text x="775" y="704" class="offset" style="white-space: pre;">0x4</text>
+      <text x="840" y="704" class="field" style="white-space: pre;">time     = ...</text>
+      <text x="775" y="736" class="offset" style="white-space: pre;">0x8</text>
+      <text x="840" y="736" class="field" style="white-space: pre;">callback = ...</text>
+      <text x="775" y="768" class="offset" style="white-space: pre;">0xc</text>
+      <text x="840" y="768" class="field" style="white-space: pre;">arg      = ...</text>
+    </g>
+    <g id="timer3">
+      <rect x="1075" y="650" width="250" height="128" rx="10" class="node-real"/>
+      <line x1="1075" y1="682" x2="1325" y2="682" class="divider"/>
+      <line x1="1075" y1="714" x2="1325" y2="714" class="divider"/>
+      <line x1="1075" y1="746" x2="1325" y2="746" class="divider"/>
+      <text x="1093" y="639" class="label" style="white-space: pre;">timer_3</text>
+      <text x="1090" y="672" class="offset" style="white-space: pre;">0x0</text>
+      <text x="1155" y="672" class="field" style="white-space: pre;">next     = NULL</text>
+      <text x="1090" y="704" class="offset" style="white-space: pre;">0x4</text>
+      <text x="1155" y="704" class="field" style="white-space: pre;">time     = ...</text>
+      <text x="1090" y="736" class="offset" style="white-space: pre;">0x8</text>
+      <text x="1155" y="736" class="field" style="white-space: pre;">callback = ...</text>
+      <text x="1090" y="768" class="offset" style="white-space: pre;">0xc</text>
+      <text x="1155" y="768" class="field" style="white-space: pre;">arg      = ...</text>
+    </g>
+    <path d="M 695 670 C 725 670, 730 670, 760 670" class="ptr"/>
+    <path d="M 1010 670 C 1040 670, 1045 670, 1075 670" class="ptr"/>
+    <text x="720" y="648" class="small" style="white-space: pre;">next</text>
+    <text x="1035" y="648" class="small" style="white-space: pre;">next</text>
+  </g>
+  <rect x="1207.64" y="246.765" width="335.588" height="448.235" rx="12" class="buffer-flash" style=""/>
+  <text x="1232.82" y="278.765" class="label" style="white-space: pre;">SSID buffer in FLASH</text>
+  <text x="1236.35" y="282.942" class="small" style="white-space: pre;"> </text>
+  <rect x="1240" y="322.942" width="268.824" height="70" rx="10" class="embed-flash" style=""/>
+  <text class="field" style="white-space: pre;" x="1258.47" y="426.471" transform="matrix(1, 0, 0, 1, -2.352941, -71.764702)">call0      loop<tspan x="1258.469970703125" dy="1em">​</tspan><tspan x="1258.469970703125" dy="1em">​</tspan>...</text>
+  <path d="M 751.765 357.118 C 865.361 357.118 1119.31 349.706 1237.64 349.706" class="ptr-blue" style=""/>
+  <text x="1245.65" y="426.648" class="good" style="white-space: pre; stroke-width: 1px;">fake sys_timeout</text>
+  <line x1="1240.59" y1="467.295" x2="1510.59" y2="467.295" class="divider" style="stroke-width: 1.5px;"/>
+  <line x1="1240.59" y1="499.295" x2="1511.76" y2="499.295" class="divider" style="stroke-width: 1.5px;"/>
+  <line x1="1240.59" y1="531.295" x2="1510.59" y2="531.295" class="divider" style="stroke-width: 1.5px;"/>
+  <text x="1255.59" y="457.295" class="offset" style="white-space: pre; stroke-width: 1px;">0x0</text>
+  <text x="1320.59" y="457.295" class="field" style="white-space: pre; stroke-width: 1px;">next     = Don't care</text>
+  <text x="1255.59" y="489.295" class="offset" style="white-space: pre; stroke-width: 1px;">0x4</text>
+  <text x="1320.59" y="489.295" class="field" style="white-space: pre; stroke-width: 1px;">time     = small</text>
+  <text x="1255.59" y="521.295" class="offset" style="white-space: pre; stroke-width: 1px;">0x8</text>
+  <text x="1320.59" y="521.295" class="field" style="white-space: pre; stroke-width: 1px;">callback = &amp;shellcode</text>
+  <text x="1255.59" y="553.295" class="offset" style="white-space: pre; stroke-width: 1px;">0xc</text>
+  <text x="1320.59" y="553.295" class="field" style="white-space: pre; stroke-width: 1px;">arg      = controlled</text>
+  <rect x="1241.17" y="433.53" width="271.177" height="133.529" rx="10" class="embed-flash" style=""/>
+  <text x="1253.88" y="313.707" class="good" style="white-space: pre; stroke-width: 1px;">shellcode</text>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: &quot;Arial&quot;, sans-serif; font-size: 28px;" x="1765.88" y="642.353">Enter your text here</text>
+  <text x="490.353" y="180.766" class="good" style="white-space: pre; stroke-width: 1px;">shellcode</text>
+  <rect x="478.236" y="191.765" width="271.176" height="57.412" rx="10" class="embed" style=""/>
+  <text class="field" style="white-space: pre;" x="1258.47" y="426.471" transform="matrix(1, 0, 0, 1, -771.764709, -215.294113)">call0      loop<tspan x="1258.469970703125" dy="1em">​</tspan><tspan x="1258.469970703125" dy="1em">​</tspan>...</text>
+</svg>

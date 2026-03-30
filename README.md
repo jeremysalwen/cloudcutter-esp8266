@@ -114,7 +114,26 @@ In our case:
 
 ##### Hijacking Timers
 
-The TUYA OS relies on [LWIP](https://www.nongnu.org/lwip) for its networking stack.
+The TUYA SDK relies on [LWIP](https://www.nongnu.org/lwip) for its networking stack.  LWIP internally keeps track of a set of timers that fire periodically (e.g. every 100, 500, 1000, 5000 milliseconds), to perform tasks like TCP timeouts, ARP cache clearing, etc.  These timers are stored in a singly linked list, ordered by their time of expiration.  LWIP periodically checks the entries of the list and calls the callback function for any entries which are due to be executed.
+
+Each entry in the list is a `sys_timeout` struct, and looks like this:
+
+```
+0x0	struct sys_timeout* 	    next
+0x4	uint	                    time
+0x8	void*	                    callback
+0xc	void*	                    arg
+```
+
+If we can overwrite this linked list, we can fool LWIP into thinking there is a timer due to be executed, and the next time it checks the timers, it will call a callback we control.  If we make this callback point to our shellcode in flash, execution will jump to our shellcode at that point!
+
+
+![Timer Diagram](timer_diagram.svg "Timer Diagram")
+
+Because the global list of timers is at a fixed location in memory, we can overwrite it to point at a "fake" `sys_timer`, also embedded in the SSID buffer at a fixed address in global memory.  We can use the "unlink" primitive from step 1 to perform this write.  For the fake `sys_timeout`, we populate it as follows:
+
+**next:** we don't care what value is used, since this value will only be used after our exploit is run.
+**time:** we need to put a small integer here.  However, this is difficult 
 
 
 [^1]: Tuya doesn't release enough information to determine exactly how many newly exploitable devices there are.  We estimate conservatively tens of millions based on the following information: [We know Tuya activated 88 million devices before 2020, and over 100m in 2020 and 2021 each](https://www1.hkexnews.hk/listedco/listconews/sehk/2022/0622/2022062200189.pdf).  The Tuya-convert vulnerability was patched in Q1 2019, and the vast majority of devices sold at the beginning of 2020 were esp8266 based, but by 2021 they were mostly using Beken and Realtek chips.  This is still a very rough timeline, since there is a delay between when the new firmware appears and when it actually is used by newly manufactured devices (in general, products stay on the firmware version that was chosen when they started being manufactured).  Furthermore, there is a delay from when the product is manufactured to when it is bought, installed, and activated. Thus it seems likely that there could be upwards of 100m newly exploitable devices (i.e. esp8266 based devices which were not already vulnerable to Tuya-Convert), but due to the uncertainty involved, tens of millions seems like a more conservative estimate.
