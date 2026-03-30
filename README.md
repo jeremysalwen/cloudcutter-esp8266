@@ -129,11 +129,47 @@ If we can overwrite this linked list, we can fool LWIP into thinking there is a 
 
 
 ![Timer Diagram](timer_diagram.svg "Timer Diagram")
+TODO:fix positioning of sys_timeout
 
-Because the global list of timers is at a fixed location in memory, we can overwrite it to point at a "fake" `sys_timer`, also embedded in the SSID buffer at a fixed address in global memory.  We can use the "unlink" primitive from step 1 to perform this write.  For the fake `sys_timeout`, we populate it as follows:
+Because the global list of timers is at a fixed location in DRAM, we can overwrite it to point at a "fake" `sys_timer`, also embedded in the SSID buffer at a fixed address in DRAM.  Because both addresses are in DRAM (and therefore writable), we can use the unlink primitive from Stage 1 to perform this write.  Remember that the unlink primitive will necessarily perform *two* writes, but that is not a problem for us, because we do not care about ovewriting the `next` pointer which occupies the first 4 bytes of the `sys_timeout` struct[^5].
 
-**next:** we don't care what value is used, since this value will only be used after our exploit is run.
-**time:** we need to put a small integer here.  However, this is difficult 
+The important parts to get right are the `callback` field needs to point to our shellcode, and the `time` field needs to be a relatively small number, so that the callback will be called in a reasonable amount of time.  Luckily for us the SSID is stored at one of two fixed locations in FLASH, so with our shellcode embedded in the SSID, it's easy to find it's address.  On the other hand, making the `time` field be a small numbers is actually is a bit tricky, because our fake `sys_timeout` struct is also embedded in our wifi SSID, which is read from the original configuration packet we sent the device.  This configuration packet cannot have any null bytes in it, or it will be interpreted as the end of the string.  So for a 4 byte integer, the smallest value we could encode without any null bytes is `0x01010101`, which is actually quite large!  This corresponds to 269 million milliseconds, or over 3 days that we would have to wait for this to trigger!
+
+Luckily, we have a trick that we can use to get a smaller `time` field.  Right before the wifi SSID in flash, is stored the length of the SSID as an integer, which will be `32` at most.  Rather than making the `sys_timeout` pointer point *into* our SSID buffer, we make it point 8 befores *before* the SSID buffer, so that the 32 bit SSID length lines up exactly with the `time` field in the fake `sys_timeout` struct.  This way when the timer check occurs, it will read the ssid length as the timeout, which will cause the timer callback to be called after only a few milliseconds.
+
+TODO: Diagram of the fake sys_timeout
+
+### Stage 3: Shellcode
+
+With the previous two stages, we have gone from a buffer overflow, to arbitrary code execution.  Aren't we basically done?  Well, not quite, since it turns out we don't really have much *room* to fit assembly code that does anything interesting.
+
+Recall, in stage 1, we put a fake `smart_frame_packet` in our SSID, which takes up 16 bytes.  In stage 2, we put half of a `sys_timeout` packet in there as well, which takes up another 8 bytes.  The SSID only fits 32 bytes maximum, so there's only 8 bytes left!  Luckily, we also have the wifi password as a place to store shellcode.  But even then, that's only an additional 64 bytes.  Each instruction takes up 2-3 bytes, and addresses we need to reference take up 4 bytes... we really have maybe 20 instructions to work with to do something interesting.
+
+Really, by "doing something interesting", we need to do one of two things:  We either need to overwrite the keys in flash, or we need to somehow exfiltrate the keys.  We chose to follow the cloudcutter approach of overwriting the keys in flash, because it was proven to work, and because it allows us to reuse the same tools for the remained of the exploit that cloudcutter used.
+
+So to review, how exactly did cloudcutter overwrite the credentials in flash?  The key is the `FOOBAR` function, a test function which is not used by the TUYA SDK, which will overwrite the keys after running some checks.  However, if you can jump into the middle of the function after the checks have been skipped, but before the keys have been written, it will do all the steps necessary to get your chosen keys saved to FLASH.  The only requirement is that you need a json payload containing the new configuration to write to flash.  Note this is a *different* json payload than the original configuration packet we sent that caused the buffer overflow.
+
+The payload looks like the following:
+```
+{
+  "auzkey": "<length 32 string>",
+  "pskkey": "<length 37 string>",
+  "prod_test": false,
+  "prod_idx": "<nonempty string>"
+}
+```
+
+By providing known values for the auzkey and pskkey, we will be able to MITM the device upon reboot.
+
+If we try to make the minimal version of this payload, we will set prod_idx to be a one character string, and remove any extraneous whitespace, giving a minimal length of 59 + 32 + 37 = 128.  There is absolutely no way we can fit this payload inside of our SSID+password.
+
+
+2. we must have auzkey with size 32,
+3. we must have pskkey with size 37
+4. prod_test must be present and false, but it doesn't type check, so any non-boolean will be interpreted as false.
+5. prod_idx must be present, but it doesn't have to be a string because again they don't type check, so it will just be interpreted as an empty strings
+
+
 
 
 [^1]: Tuya doesn't release enough information to determine exactly how many newly exploitable devices there are.  We estimate conservatively tens of millions based on the following information: [We know Tuya activated 88 million devices before 2020, and over 100m in 2020 and 2021 each](https://www1.hkexnews.hk/listedco/listconews/sehk/2022/0622/2022062200189.pdf).  The Tuya-convert vulnerability was patched in Q1 2019, and the vast majority of devices sold at the beginning of 2020 were esp8266 based, but by 2021 they were mostly using Beken and Realtek chips.  This is still a very rough timeline, since there is a delay between when the new firmware appears and when it actually is used by newly manufactured devices (in general, products stay on the firmware version that was chosen when they started being manufactured).  Furthermore, there is a delay from when the product is manufactured to when it is bought, installed, and activated. Thus it seems likely that there could be upwards of 100m newly exploitable devices (i.e. esp8266 based devices which were not already vulnerable to Tuya-Convert), but due to the uncertainty involved, tens of millions seems like a more conservative estimate.
@@ -143,3 +179,5 @@ Because the global list of timers is at a fixed location in memory, we can overw
 [^3]: SSID is just the technical term for the name of a wifi conntection.
 
 [^4]: The [full memory map](https://github.com/esp8266/esp8266-wiki/wiki/Memory-Map) is more complicated, but I have simplified it here to the main sections.
+
+[^5]: We have to be a bit careful about setting up the unlink writes, since one of the writes is offset by 4 bytes.  4 bytes offset from the `sys_timeout` struct is the `time` field, which we *do* care if it gets overwritten.  However, we can avoid this by making sure that the *other* write is offset by 4 bytes, i.e. in our fake `smart_frame_packet` struct, we set `next = &fake_sys_timeout` and `prev = &global_sys_timeout_queue - 4 bytes`.  This way the `global_sys_timeout_queue` will be overwritten with the address of the `fake_sys_timeout`, and `fake_sys_timeout.next` (which we do not care about)  will be overweritten with the address 4 bytes before `global_sys_timeout_queue`
