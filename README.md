@@ -1,8 +1,8 @@
 ### CloudCutter on esp8266
 
-```
-TL;DR: Similar buffer overflow to cloudcutter, but now on the stack => unlink primitive => hijacking a timer with double indirection to bypass W/X permissions => shellcode in wifi credentials flash => egghunt for a larger json payload => overwrite credentials identically to cloudcutter.
-```
+> [!NOTE]
+> **TL;DR:** The esp8266 has a similar buffer overflow to cloudcutter, but now on the stack => unlink primitive => hijacking a timer with double indirection to bypass W/X permissions => shellcode in wifi credentials flash => egghunt for a larger json payload => overwrite credentials identically to cloudcutter.
+
 
 [Cloudcutter](https://github.com/tuya-cloudcutter/tuya-cloudcutter) is a tool that disconnects TUYA IOT devices from the cloud, using a remote exploit that allows you total control of the devices in your home.
 
